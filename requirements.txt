@@ -1,0 +1,4 @@
+validators                              # not in debian
+psycopg2-binary                         # debian: python3-psycopg2
+Flask==0.12.1                           # debian: python3-flask
+Flask-RESTful==0.3.5                    # debian: python3-flask-restful
