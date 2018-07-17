@@ -17,11 +17,11 @@ correct branch for you in a local copy if you have installed mercurial.
 
 ## Routes
 
-GET    `/domains`
+GET    `/api/domains`
   : list all domains
   
-POST   `/domains`
+POST   `/api/domains`
   : add a new domain
   
-GET    `/domains/<name>`
+GET    `/api/domains/<name>`
   : display a specific domain
