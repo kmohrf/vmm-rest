@@ -10,4 +10,3 @@ def validate(validator, type=None):
         validator(value)
         return type(value) if type is not None else value
     return _valdidate
-

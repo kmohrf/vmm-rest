@@ -8,6 +8,7 @@ class ServiceList(fields.Raw):
     def format(self, value):
         return value.split(' ')
 
+
 Quota = dict(
     num_messages=fields.Integer(attribute='messages'),
     num_bytes=fields.Integer(attribute='bytes')
