@@ -4,9 +4,10 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-validators = "*"
-psycopg2-binary = "*"
 Flask = "==0.12.1"
 Flask-RESTful = "==0.3.5"
+marshmallow = "==3.0.0b12"
+psycopg2-binary = "*"
+validators = "*"
 
 [dev-packages]
