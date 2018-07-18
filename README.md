@@ -25,3 +25,9 @@ POST   `/api/domains`
   
 GET    `/api/domains/<name>`
   : display a specific domain
+
+PUT    `/api/domains/<name>`
+  : update domain data
+  
+DELETE `/api/domains/<name>`
+  : delete a domain
