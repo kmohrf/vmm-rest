@@ -1,5 +1,9 @@
 from flask import request
-from typing import Iterable, List, MutableMapping
+from typing import Iterable, Generator, List, MutableMapping as MM, Mapping, Any
+
+
+def is_not_none(value: Any) -> bool:
+    return value is not None
 
 
 def flatten(lists: Iterable[Iterable]) -> List:
@@ -9,17 +13,33 @@ def flatten(lists: Iterable[Iterable]) -> List:
     return result
 
 
-def pick(_dict: MutableMapping, keys: Iterable, pop=True, default=None) -> List:
-    result = []
+def pick(_dict: MM, keys: Iterable, pop=True, default=None) -> Generator[Any, None, None]:
     for key in keys:
-        value = _dict.pop(key, default) if pop else _dict.get(key, default)
-        result.append(value)
-    return result
+        yield _dict.pop(key, default) if pop else _dict.get(key, default)
 
 
-def drop(_dict: MutableMapping, keys: Iterable) -> MutableMapping:
+def pick_first(_dict: MM, keys: Iterable, pop=True, predicate=is_not_none) -> Any:
+    class _Undefined:
+        pass
+    for value in pick(_dict, keys, pop=pop, default=_Undefined):
+        if value is _Undefined:
+            continue
+        elif callable(predicate) and predicate(value):
+            return value
+        elif value is predicate:
+            return value
+    return None
+
+
+def drop(_dict: MM, keys: Iterable) -> MM:
     for key in keys:
         _dict.pop(key, None)
+    return _dict
+
+
+def assign(_dict: MM, *_dicts: Iterable[Mapping]) -> MM:
+    for __dict in _dicts:
+        _dict.update(__dict)
     return _dict
 
 
