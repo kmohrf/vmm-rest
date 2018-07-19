@@ -47,15 +47,15 @@ class DomainBaseResource(Resource):
         for key, value in data.items():
             if key == 'note':
                 self.vmm.domain_note(name, value)
-            if key == 'transport':
+            elif key == 'transport':
                 propagate = data.get('transport_propagate', False)
                 self.vmm.domain_transport(name, value, force=propagate)
-            if key == 'services':
+            elif key == 'services':
                 propagate = data.get('services_propagate', False)
                 # TODO: domain_services signature is not python3-style.
                 # this will fail with: got multiple values for argument 'force'
                 self.vmm.domain_services(name, *value, force=propagate)
-            if key == 'quota':
+            elif key == 'quota':
                 propagate = data.get('quota_propagate', False)
                 num_messages, num_bytes = value.pop('num_messages'), value.pop('num_bytes')
                 self.vmm.domain_quotalimit(name, num_bytes, num_messages, force=propagate)
