@@ -4,6 +4,7 @@ A REST-ish API for [vmm](http://vmm.localdomain.org/) the virtual mail manager.
 
 vmm-rest is in the very early stages. Adding new domains or user accounts (anything that touches the filesystem) won’t work at the moment.
 
+
 ## Run vmm-rest
 
 You can use the make target `make run` to start the flask debug server. This will try to execute
@@ -16,6 +17,8 @@ correct branch for you in a local copy if you have installed mercurial.
 
 
 ## Routes
+
+### Domains
 
 GET    `/api/domains`
   : list all domains
@@ -31,3 +34,20 @@ PUT    `/api/domains/<name>`
   
 DELETE `/api/domains/<name>`
   : delete a domain
+
+### Users (Mailboxes)
+
+GET    `/api/users`
+  : list all users
+  
+POST   `/api/users`
+  : add a new user
+  
+GET    `/api/users/<address>`
+  : display a specific user
+
+PUT    `/api/users/<address>`
+  : update user data
+  
+DELETE `/api/users/<address>`
+  : delete a user
