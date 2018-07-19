@@ -1,29 +1,20 @@
 from http import HTTPStatus
+from typing import MutableMapping
 
-from flask_restful import fields as rfields, marshal
-from marshmallow import Schema, fields, validate, UnmarshalResult
+from flask_restful import fields as json_fields, marshal
+from marshmallow import fields, Schema
 import validators
-from VirtualMailManager.serviceset import SERVICES
 
-from vmmrest.util import flatten, pick, create_body_parser
+from vmmrest.common import FlatNested, Quota, QuotaSchema, ServicesField, ServiceList
 from vmmrest.resources import Resource
-
-
-class ServiceList(rfields.Raw):
-    def format(self, value):
-        return value.split(' ')
-
-
-class QuotaSchema(Schema):
-    num_messages = fields.Integer(default=0)
-    num_bytes = fields.Integer(default=0)
+from vmmrest.util import create_body_parser, flatten, pick
 
 
 class DomainSchema(Schema):
     note = fields.String()
     quota = fields.Nested(QuotaSchema)
     quota_propagate = fields.Boolean()
-    services = fields.List(fields.String(), validate=validate.ContainsOnly(SERVICES))
+    services = ServicesField()
     services_propagate = fields.Boolean()
     transport = fields.String()
     transport_propagate = fields.Boolean()
@@ -33,23 +24,18 @@ class DomainCreateSchema(DomainSchema):
     name = fields.String(required=True, validate=validators.domain)
 
 
-Quota = dict(
-    num_messages=rfields.Integer(attribute='messages'),
-    num_bytes=rfields.Integer(attribute='bytes')
-)
-
 Domain = dict(
-    name=rfields.String(attribute='domain name'),
-    gid=rfields.Integer(),
+    name=json_fields.String(attribute='domain name'),
+    gid=json_fields.Integer(),
     services=ServiceList(attribute='active services'),
-    transport=rfields.String(),
-    quota=rfields.Nested(Quota),
-    note=rfields.String(),
-    num_accounts=rfields.Integer(attribute='accounts'),
-    num_aliases=rfields.Integer(attribute='aliases'),
-    num_relocated=rfields.Integer(attribute='relocated'),
-    num_domain_catchalls=rfields.Integer(attribute='catch-all dests'),
-    num_domain_aliases=rfields.Integer(attribute='alias domains')
+    transport=json_fields.String(),
+    quota=FlatNested(Quota),
+    note=json_fields.String(),
+    num_accounts=json_fields.Integer(attribute='accounts'),
+    num_aliases=json_fields.Integer(attribute='aliases'),
+    num_relocated=json_fields.Integer(attribute='relocated'),
+    num_domain_catchalls=json_fields.Integer(attribute='catch-all dests'),
+    num_domain_aliases=json_fields.Integer(attribute='alias domains')
 )
 
 
