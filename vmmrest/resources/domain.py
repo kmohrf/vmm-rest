@@ -43,9 +43,7 @@ class DomainBaseResource(Resource):
     def _dump_domain(self, name):
         return marshal(self.vmm.domain_info(name), Domain)
 
-    def _save_to_domain(self, name, result: UnmarshalResult) -> None:
-        data, errors = result
-
+    def _save_to_domain(self, name, data: MutableMapping) -> None:
         for key, value in data.items():
             if key == 'note':
                 self.vmm.domain_note(name, value)
@@ -74,7 +72,7 @@ class DomainCollectionResource(DomainBaseResource):
         return flatten(map(_map, gid_domains.values()))
 
     def post(self):
-        data = self.parse_post()
+        data, errors = self.parse_post()
         name, transport, note = pick(data, ['name', 'transport', 'note'])
         self.vmm.domain_add(name, transport, note)
         self._save_to_domain(name, data)
@@ -88,7 +86,7 @@ class DomainResource(DomainBaseResource):
         return self._dump_domain(name)
 
     def put(self, name):
-        data = self.parse_put()
+        data, errors = self.parse_put()
         self._save_to_domain(name, data)
         return self._dump_domain(name)
 
