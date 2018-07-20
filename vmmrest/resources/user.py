@@ -1,6 +1,7 @@
 from http import HTTPStatus
 from typing import MutableMapping
 
+from flask import request
 from flask_restful import fields as json_fields, marshal
 from marshmallow import fields, Schema, validate
 from VirtualMailManager.constants import TYPE_ACCOUNT
@@ -89,8 +90,9 @@ class UserCollectionResource(UserBaseResource):
 
     @api_response('users')
     def get(self):
-        # TODO: add pattern support via query args
-        gids, gid_addresses = self.vmm.address_list(TYPE_ACCOUNT)
+        pattern = request.args.get('pattern', None)
+        # TODO: audit address_list if it’s safe against sql injections
+        gids, gid_addresses = self.vmm.address_list(TYPE_ACCOUNT, pattern)
 
         def _map(address_infos):
             return map(lambda ai: self._dump_obj(ai[0]), address_infos)
