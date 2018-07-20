@@ -10,6 +10,6 @@ class Resource(_Resource):
 
 
 def register(app, api):
-    from . import domain, user
-    for resource in [domain, user]:
+    from . import aliases, domain, user
+    for resource in [aliases, domain, user]:
         resource.register(app, api)

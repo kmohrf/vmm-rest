@@ -51,3 +51,20 @@ PUT    `/api/users/<address>`
   
 DELETE `/api/users/<address>`
   : delete a user
+
+### Aliases/ Forwards
+
+GET    `/api/aliases`
+  : list all aliases
+  
+POST   `/api/aliases`
+  : add a new alias
+  
+GET    `/api/aliases/<address>`
+  : display a specific alias
+
+PUT    `/api/users/<address>`
+  : update alias data
+  
+DELETE `/api/users/<address>`
+  : delete an alias
