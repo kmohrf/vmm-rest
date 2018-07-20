@@ -7,7 +7,7 @@ import validators
 
 from vmmrest.common import FlatNested, Quota, QuotaSchema, ServicesField, ServiceList
 from vmmrest.resources import Resource
-from vmmrest.util import create_body_parser, flatten, pick
+from vmmrest.util import api_response, create_body_parser, flatten, pick
 
 
 class DomainSchema(Schema):
@@ -64,6 +64,7 @@ class DomainBaseResource(Resource):
 class DomainCollectionResource(DomainBaseResource):
     parse_post = create_body_parser(DomainCreateSchema)
 
+    @api_response('domains')
     def get(self):
         gids, gid_domains = self.vmm.domain_list()
 
@@ -71,6 +72,7 @@ class DomainCollectionResource(DomainBaseResource):
             return map(self._dump_obj, domains)
         return flatten(map(_map, gid_domains.values()))
 
+    @api_response()
     def post(self):
         data, errors = self.parse_post()
         name, transport, note = pick(data, ['name', 'transport', 'note'])
@@ -82,9 +84,11 @@ class DomainCollectionResource(DomainBaseResource):
 class DomainResource(DomainBaseResource):
     parse_put = create_body_parser(DomainSchema)
 
+    @api_response()
     def get(self, name):
         return self._dump_obj(name)
 
+    @api_response()
     def put(self, name):
         data, errors = self.parse_put()
         self._save_to_obj(name, data)

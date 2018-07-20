@@ -7,7 +7,7 @@ from VirtualMailManager.constants import TYPE_ACCOUNT
 from VirtualMailManager.serviceset import SERVICES
 
 from vmmrest.common import FlatNested, Quota, QuotaSchema, ServicesField
-from vmmrest.util import assign, create_body_parser, flatten, pick
+from vmmrest.util import api_response, assign, create_body_parser, flatten, pick
 from vmmrest.resources import Resource
 
 
@@ -87,6 +87,7 @@ class UserBaseResource(Resource):
 class UserCollectionResource(UserBaseResource):
     parse_post = create_body_parser(UserCreateSchema)
 
+    @api_response('users')
     def get(self):
         # TODO: add pattern support via query args
         gids, gid_addresses = self.vmm.address_list(TYPE_ACCOUNT)
@@ -95,6 +96,7 @@ class UserCollectionResource(UserBaseResource):
             return map(lambda ai: self._dump_obj(ai[0]), address_infos)
         return flatten(map(_map, gid_addresses.values()))
 
+    @api_response()
     def post(self):
         data, errors = self.parse_post()
         address, password, note = pick(data, ['address', 'password', 'note'])
@@ -106,9 +108,11 @@ class UserCollectionResource(UserBaseResource):
 class UserResource(UserBaseResource):
     parse_put = create_body_parser(UserSchema)
 
+    @api_response()
     def get(self, address):
         return self._dump_obj(address)
 
+    @api_response()
     def put(self, address):
         data, errors = self.parse_put()
         self._save_to_obj(address, data)
