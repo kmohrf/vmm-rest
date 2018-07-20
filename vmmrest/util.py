@@ -1,3 +1,4 @@
+from http import HTTPStatus
 from flask import request
 from typing import Iterable, Generator, List, MutableMapping as MM, Mapping, Any
 
@@ -57,3 +58,22 @@ def create_body_parser(schema_class):
         schema = schema_class()
         return schema.load(request.get_json())
     return _parse
+
+
+def api_response(wrap=None, default_http_status=HTTPStatus.OK):
+    def decorator(func):
+        def func_executor(*args, **kwargs):
+            res = func(*args, **kwargs)
+            if isinstance(res, tuple):
+                res, http_status = res
+            else:
+                http_status = default_http_status
+            result = dict(
+                data=({wrap: res} if wrap else res),
+                errors=[]
+            )
+            return result, http_status
+        func_executor.__name__ = func.__name__
+        func_executor.__doc__ = func.__doc__
+        return func_executor
+    return decorator
