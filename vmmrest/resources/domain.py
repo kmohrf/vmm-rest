@@ -40,10 +40,10 @@ Domain = dict(
 
 
 class DomainBaseResource(Resource):
-    def _dump_domain(self, name):
+    def _dump_obj(self, name):
         return marshal(self.vmm.domain_info(name), Domain)
 
-    def _save_to_domain(self, name, data: MutableMapping) -> None:
+    def _save_to_obj(self, name, data: MutableMapping) -> None:
         for key, value in data.items():
             if key == 'note':
                 self.vmm.domain_note(name, value)
@@ -68,27 +68,27 @@ class DomainCollectionResource(DomainBaseResource):
         gids, gid_domains = self.vmm.domain_list()
 
         def _map(domains):
-            return map(self._dump_domain, domains)
+            return map(self._dump_obj, domains)
         return flatten(map(_map, gid_domains.values()))
 
     def post(self):
         data, errors = self.parse_post()
         name, transport, note = pick(data, ['name', 'transport', 'note'])
         self.vmm.domain_add(name, transport, note)
-        self._save_to_domain(name, data)
-        return self._dump_domain(name)
+        self._save_to_obj(name, data)
+        return self._dump_obj(name)
 
 
 class DomainResource(DomainBaseResource):
     parse_put = create_body_parser(DomainSchema)
 
     def get(self, name):
-        return self._dump_domain(name)
+        return self._dump_obj(name)
 
     def put(self, name):
         data, errors = self.parse_put()
-        self._save_to_domain(name, data)
-        return self._dump_domain(name)
+        self._save_to_obj(name, data)
+        return self._dump_obj(name)
 
     def delete(self, name):
         self.vmm.domain_delete(name, True, force=True)

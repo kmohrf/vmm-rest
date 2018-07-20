@@ -54,7 +54,7 @@ User = dict(
 
 
 class UserBaseResource(Resource):
-    def _dump_user(self, address):
+    def _dump_obj(self, address):
         info = self.vmm.user_info(address)
         info['services'] = []
         for service in SERVICES:
@@ -63,7 +63,7 @@ class UserBaseResource(Resource):
         info['transport'] = info['transport'].replace(' [domain default]', '')
         return marshal(info, User)
 
-    def _save_to_user(self, address, data: MutableMapping) -> None:
+    def _save_to_obj(self, address, data: MutableMapping) -> None:
         for key, value in data.items():
             if key == 'name':
                 self.vmm.user_name(address, value)
@@ -92,27 +92,27 @@ class UserCollectionResource(UserBaseResource):
         gids, gid_addresses = self.vmm.address_list(TYPE_ACCOUNT)
 
         def _map(address_infos):
-            return map(lambda ai: self._dump_user(ai[0]), address_infos)
+            return map(lambda ai: self._dump_obj(ai[0]), address_infos)
         return flatten(map(_map, gid_addresses.values()))
 
     def post(self):
         data, errors = self.parse_post()
         address, password, note = pick(data, ['address', 'password', 'note'])
         self.vmm.user_add(address, password, note)
-        self._save_to_user(address, data)
-        return self._dump_user(address)
+        self._save_to_obj(address, data)
+        return self._dump_obj(address)
 
 
 class UserResource(UserBaseResource):
     parse_put = create_body_parser(UserSchema)
 
     def get(self, address):
-        return self._dump_user(address)
+        return self._dump_obj(address)
 
     def put(self, address):
         data, errors = self.parse_put()
-        self._save_to_user(address, data)
-        return self._dump_user(address)
+        self._save_to_obj(address, data)
+        return self._dump_obj(address)
 
     def delete(self, address):
         self.vmm.user_delete(address, True, force=True)
