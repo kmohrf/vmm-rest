@@ -51,6 +51,7 @@ def validate(validator, type=None):
 
 
 def create_body_parser(schema_class):
+    # noinspection PyDecorator
     @staticmethod
     def _parse():
         schema = schema_class()
