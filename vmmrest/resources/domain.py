@@ -31,7 +31,7 @@ Domain = dict(
     transport=json_fields.String(),
     quota=FlatNested(Quota),
     note=json_fields.String(),
-    num_accounts=json_fields.Integer(attribute='accounts'),
+    num_users=json_fields.Integer(attribute='accounts'),
     num_aliases=json_fields.Integer(attribute='aliases'),
     num_relocated=json_fields.Integer(attribute='relocated'),
     num_domain_catchalls=json_fields.Integer(attribute='catch-all dests'),
